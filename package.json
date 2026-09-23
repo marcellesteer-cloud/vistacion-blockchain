@@ -6,7 +6,11 @@
   "scripts": {
     "compile": "hardhat compile",
     "test": "hardhat test",
-    "deploy:token": "hardhat run scripts/deploy-token.js --network sepolia"
+    "deploy:token": "hardhat run scripts/deploy-token.js --network sepolia",
+    "deploy:staking": "hardhat run scripts/deploy-staking.js --network sepolia",
+    "deploy:escrow": "hardhat run scripts/deploy-escrow.js --network sepolia",
+    "deploy:governance": "hardhat run scripts/deploy-governance.js --network sepolia",
+    "deploy:ico": "hardhat run scripts/deploy-ico.js --network sepolia"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
