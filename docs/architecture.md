@@ -20,6 +20,15 @@ Actors:
 - **Oracle** — verifies off-chain trade documents for Escrow.
 - **Validators / chain** — execute transactions and secure the network.
 
+## Deployment and treasury operations
+
 The deployment scripts write addresses to `deploy-addresses.json` and must be run in dependency order: token, staking, escrow, governance, then ICO.
+
+After deployment, the treasury must complete both funding operations before production-like use:
+
+1. Transfer an approved VSC allocation to **Staking**, which pays rewards from its own token balance.
+2. Call `approve(icoAddress, saleInventory)` on **VistacionToken** from the treasury, allowing **ICO** to distribute the intended sale inventory.
+
+Use amounts appropriate for the configured APR, sale price, sale duration, and available treasury balance. Confirm the staking balance and ICO allowance on Sepolia before enabling users or announcing the sale. The address registry contains deployment outputs, not funding status.
 
 This design keeps VSC as the single unit of value while separating concerns into focused contracts.
