@@ -33,35 +33,28 @@ Each script records its address in `deploy-addresses.json`. The registry is init
 
 ## Post-deployment treasury setup
 
-Before enabling staking or the ICO, use the treasury wallet to perform these two on-chain setup actions:
+After all contracts are deployed, configure the optional amounts in `.env` if needed:
 
-1. **Fund Staking with VSC.** Transfer enough VSC from the treasury to the deployed Staking address so the contract can pay accrued rewards.
-2. **Approve the ICO.** Approve the deployed ICO address to spend the intended VSC sale inventory from the treasury.
+```dotenv
+STAKING_FUND_AMOUNT=1000000
+ICO_SALE_AMOUNT=5000000
+```
 
-The exact amounts are deployment and token-allocation decisions; do not copy production amounts from examples without reviewing the sale and reward parameters. Retrieve the deployed addresses from `deploy-addresses.json` and verify every address on Sepolia before submitting transactions.
-
-Using Hardhat’s console with the configured Sepolia environment:
+Then run the full funding and approval sequence with the treasury signer:
 
 ```bash
-npx hardhat console --network sepolia
+npm run post-deploy:treasury
 ```
 
-```js
-const fs = require("fs");
-const addresses = JSON.parse(fs.readFileSync("deploy-addresses.json", "utf8"));
-const [treasury] = await ethers.getSigners();
-const token = await ethers.getContractAt("VistacionToken", addresses.token, treasury);
+The script will:
 
-// Choose and review this amount before sending the transaction.
-const stakingAmount = ethers.parseEther("1000000");
-await (await token.transfer(addresses.staking, stakingAmount)).wait();
+1. Verify that the network is Sepolia and that deployment addresses exist.
+2. Require the configured treasury address to match the transaction signer.
+3. Transfer enough VSC to Staking to reach `STAKING_FUND_AMOUNT`.
+4. Approve the ICO contract for `ICO_SALE_AMOUNT` VSC.
+5. Re-read and verify the Staking balance and ICO allowance.
 
-// Choose and review the ICO inventory before sending the transaction.
-const icoAmount = ethers.parseEther("5000000");
-await (await token.approve(addresses.ico, icoAmount)).wait();
-```
-
-Confirm the resulting balances and allowance before starting the sale. Keep the treasury signer separate from ordinary user accounts, and use a multisig for production treasury operations.
+The default amounts are examples, not production recommendations. Review the APR, sale price, sale duration, and treasury allocation before sending transactions. The script is idempotent for the configured targets: it does not transfer or approve again when the existing balance or allowance is already sufficient.
 
 ## Important notes
 
