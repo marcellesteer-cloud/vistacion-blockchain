@@ -48,13 +48,14 @@ npm run post-deploy:treasury
 
 The script will:
 
-1. Verify that the network is Sepolia and that deployment addresses exist.
-2. Require the configured treasury address to match the transaction signer.
-3. Transfer enough VSC to Staking to reach `STAKING_FUND_AMOUNT`.
-4. Approve the ICO contract for `ICO_SALE_AMOUNT` VSC.
-5. Re-read and verify the Staking balance and ICO allowance.
+1. Refuse to run unless the Hardhat network is Sepolia.
+2. Validate the deployment addresses and confirm that contract code exists at each address.
+3. Require `TREASURY_ADDRESS` and verify that it matches the transaction signer.
+4. Transfer enough VSC to Staking to reach `STAKING_FUND_AMOUNT`, rechecking after each transfer because token transfers burn a fee.
+5. Approve the ICO contract for `ICO_SALE_AMOUNT` VSC only when the current allowance is insufficient.
+6. Re-read and verify the final Staking balance and ICO allowance.
 
-The default amounts are examples, not production recommendations. Review the APR, sale price, sale duration, and treasury allocation before sending transactions. The script is idempotent for the configured targets: it does not transfer or approve again when the existing balance or allowance is already sufficient.
+The default amounts are examples, not production recommendations. Review the APR, sale price, sale duration, and treasury allocation before sending transactions. The script is idempotent for the configured targets and avoids duplicate operations when the existing balance or allowance is already sufficient.
 
 ## Important notes
 

@@ -17,6 +17,14 @@ function loadAddresses() {
   return addresses;
 }
 
+function requiredAddress(name) {
+  const value = process.env[name];
+  if (!value || !hre.ethers.isAddress(value)) {
+    throw new Error(`${name} must be a valid address`);
+  }
+  return value;
+}
+
 function requiredPositiveAmount(name, fallback) {
   const value = process.env[name] || fallback;
   try {
@@ -28,21 +36,33 @@ function requiredPositiveAmount(name, fallback) {
   }
 }
 
+async function requireContract(address, name) {
+  const code = await hre.ethers.provider.getCode(address);
+  if (code === "0x") {
+    throw new Error(`${name} address ${address} has no contract code on Sepolia`);
+  }
+}
+
 async function main() {
   if (hre.network.name !== "sepolia") {
     throw new Error(`Refusing to run on ${hre.network.name}; use --network sepolia`);
   }
 
   const addresses = loadAddresses();
+  const configuredTreasury = requiredAddress("TREASURY_ADDRESS");
   const [treasury] = await hre.ethers.getSigners();
-  const configuredTreasury = process.env.TREASURY_ADDRESS;
 
-  if (configuredTreasury && hre.ethers.isAddress(configuredTreasury)
-      && configuredTreasury.toLowerCase() !== treasury.address.toLowerCase()) {
+  if (configuredTreasury.toLowerCase() !== treasury.address.toLowerCase()) {
     throw new Error(
       `Signer ${treasury.address} does not match TREASURY_ADDRESS ${configuredTreasury}`
     );
   }
+
+  await Promise.all([
+    requireContract(addresses.token, "Token"),
+    requireContract(addresses.staking, "Staking"),
+    requireContract(addresses.ico, "ICO"),
+  ]);
 
   const stakingAmount = requiredPositiveAmount("STAKING_FUND_AMOUNT", "1000000");
   const icoAmount = requiredPositiveAmount("ICO_SALE_AMOUNT", "5000000");
@@ -50,26 +70,35 @@ async function main() {
 
   console.log(`Treasury: ${treasury.address}`);
   console.log(`Token: ${addresses.token}`);
-  console.log(`Staking funding: ${hre.ethers.formatEther(stakingAmount)} VSC`);
-  console.log(`ICO allowance: ${hre.ethers.formatEther(icoAmount)} VSC`);
+  console.log(`Staking funding target: ${hre.ethers.formatEther(stakingAmount)} VSC`);
+  console.log(`ICO allowance target: ${hre.ethers.formatEther(icoAmount)} VSC`);
 
-  const stakingBefore = await token.balanceOf(addresses.staking);
-  const allowanceBefore = await token.allowance(treasury.address, addresses.ico);
-  console.log(`Staking balance before: ${hre.ethers.formatEther(stakingBefore)} VSC`);
-  console.log(`ICO allowance before: ${hre.ethers.formatEther(allowanceBefore)} VSC`);
+  let stakingBalance = await token.balanceOf(addresses.staking);
+  let allowance = await token.allowance(treasury.address, addresses.ico);
+  console.log(`Staking balance before: ${hre.ethers.formatEther(stakingBalance)} VSC`);
+  console.log(`ICO allowance before: ${hre.ethers.formatEther(allowance)} VSC`);
 
-  if (stakingBefore < stakingAmount) {
-    const transfer = await token.transfer(addresses.staking, stakingAmount - stakingBefore);
-    console.log(`Funding Staking: ${transfer.hash}`);
+  // VistacionToken burns a transfer fee, so verify after each transfer and top up
+  // again if necessary rather than assuming the requested amount arrives intact.
+  let attempts = 0;
+  while (stakingBalance < stakingAmount && attempts < 3) {
+    const shortfall = stakingAmount - stakingBalance;
+    const transfer = await token.transfer(addresses.staking, shortfall);
+    console.log(`Funding Staking (attempt ${attempts + 1}): ${transfer.hash}`);
     await transfer.wait();
-  } else {
-    console.log("Staking already has the requested balance; no transfer needed.");
+    stakingBalance = await token.balanceOf(addresses.staking);
+    attempts += 1;
   }
 
-  if (allowanceBefore < icoAmount) {
+  if (stakingBalance < stakingAmount) {
+    throw new Error("Unable to reach the requested Staking balance after three transfers");
+  }
+
+  if (allowance < icoAmount) {
     const approval = await token.approve(addresses.ico, icoAmount);
     console.log(`Approving ICO: ${approval.hash}`);
     await approval.wait();
+    allowance = await token.allowance(treasury.address, addresses.ico);
   } else {
     console.log("ICO already has the requested allowance; no approval needed.");
   }
