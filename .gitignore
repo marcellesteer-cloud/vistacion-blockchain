@@ -143,6 +143,10 @@ vite.config.ts.timestamp-*
 .vite/
 
 artifacts/
+HEAD
 cache/
 
 
+=======
+cache/
+cd279c1 (Update deployment configuration and test environment)
