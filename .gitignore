@@ -144,9 +144,13 @@ vite.config.ts.timestamp-*
 
 artifacts/
 HEAD
+HEAD
 cache/
 
 
 =======
 cache/
 cd279c1 (Update deployment configuration and test environment)
+=======
+cache/tacion-blockchain/
+7a2cc2b (Ignore nested repository)
