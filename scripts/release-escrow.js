@@ -1,0 +1,1 @@
+await escrow.verifyAndRelease(0, true);
