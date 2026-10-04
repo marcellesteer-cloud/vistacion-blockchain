@@ -1,0 +1,22 @@
+Vistacion Sepolia Test Report
+ 
+Token
+PASS
+ 
+Staking
+PASS
+ 
+Governance
+PASS
+ 
+ICO
+PASS
+ 
+Escrow Creation
+PASS
+ 
+GitHub Sync
+PASS
+ 
+Date:
+01/10/2026
