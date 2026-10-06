@@ -1,6 +1,23 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
-
+ 
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
+import {Pausable} from "@openzeppelin/contracts/utils/Pausable.sol";
+import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+ 
+contract VSCPresale is AccessControl, Pausable, ReentrancyGuard {
+using SafeERC20 for IERC20;
+ 
+bytes32 public constant SALE_MANAGER_ROLE =
+keccak256("SALE_MANAGER_ROLE");
+ 
+bytes32 public constant PAUSER_ROLE =
+keccak256("PAUSER_ROLE");
+ 
+uint256 public constant SOFT_CAP =
+10_000_000 ether;
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
