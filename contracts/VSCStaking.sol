@@ -272,20 +272,16 @@ contract VSCStaking is AccessControl, Pausable, ReentrancyGuard {
     {
         Position memory p =
             positions[account];
-
         if (p.lastUpdate == 0) {
             return p.rewards;
-        }
-
+    }
         uint256 elapsed =
             block.timestamp -
             p.lastUpdate;
-
         uint256 apy =
             getPoolAPY(
                 p.poolType
             );
-
         uint256 accrued =
             (
                 p.amount *
@@ -362,26 +358,34 @@ contract VSCStaking is AccessControl, Pausable, ReentrancyGuard {
         return 0;
     }
 
-    function getPenaltyBps(
-        PoolType poolType
-    )
-        public
-        pure
-        returns (uint256)
-    {
-        if (
-            poolType ==
-            PoolType.LOCK_90
-        ) {
-            return 500;
-        }
-
-        if (
-            poolType ==
-            PoolType.LOCK_180
-        ) {
-            return 1000;
-        }
+function getLoyaltyBonus(
+address account
+)
+public
+view
+returns (uint256)
+{
+Position memory p = positions[account];
+if (p.startTime == 0) {
+return 0;
+}
+uint256 stakingDuration =
+block.timestamp - p.startTime;
+ 
+if (stakingDuration >= 730 days) {
+return 200;
+}
+ 
+if (stakingDuration >= 365 days) {
+return 100;
+}
+ 
+if (stakingDuration >= 180 days) {
+return 50;
+}
+ 
+return 0;
+}
 
         if (
             poolType ==
