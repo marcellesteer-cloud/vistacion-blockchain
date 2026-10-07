@@ -1,6 +1,6 @@
-# Vistacion (VSC) Blockchain Deployment Guide
+# Vistacoin (VSC) Blockchain Deployment Guide
 
-This guide walks you through deploying the complete Vistacion ecosystem to Sepolia testnet.
+This guide walks you through deploying the complete Vistacoin ecosystem to Sepolia testnet.
 
 ## Prerequisites
 
@@ -18,8 +18,8 @@ This guide walks you through deploying the complete Vistacion ecosystem to Sepol
 
 ### Clone and Install
 ```bash
-git clone https://github.com/marcellesteer-cloud/vistacion-blockchain.git
-cd vistacion-blockchain
+git clone https://github.com/marcellesteer-cloud/vistacoin-blockchain.git
+cd vistacoin-blockchain
 npm install
 ```
 
@@ -74,7 +74,7 @@ npm run deploy:token
 **Output example:**
 ```
 Deploying token with: 0x1234...
-VistacionToken deployed to: 0xabcd...
+VistacoinToken deployed to: 0xabcd...
 ```
 
 Saves address to `deploy-addresses.json`.
@@ -164,7 +164,7 @@ Visit [Sepolia Etherscan](https://sepolia.etherscan.io/) and search each address
 
 Flatten contracts and upload to Etherscan for public verification:
 ```bash
-npx hardhat flatten contracts/VistacionToken.sol > flattened-token.sol
+npx hardhat flatten contracts/VistacoinToken.sol > flattened-token.sol
 # Then upload via Etherscan's verification interface
 ```
 

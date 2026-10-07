@@ -1,3 +1,9 @@
 {
-  "network": "sepolia"
+  "network": "sepolia",
+  "token": "0x587922d204AA80E44097FedF22563E54Aa51397a",
+  "staking": "0xAbC5A126D2Ac1D6f4f075E10931d7EFd04b9Ae9F",
+  "governance": "0x9Bb624BCd26478F96A4BdD1CEc09B717cA1240D6",
+  "ico": "0xA409D8aB522297A2558d8290e4Da964EA9408290",
+  "escrow": "0x12caD46fF8bFa7bbf2239b7893aA670232fCd971"
 }
+
