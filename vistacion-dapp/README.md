@@ -1,36 +1,40 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Vistacion dApp
 
-## Getting Started
+A Next.js interface for the Vistacion Sepolia deployment. The current dashboard
+supports injected-wallet connection (MetaMask, Rabby, or Coinbase Wallet),
+read-only VSC and Sepolia ETH balances, VSC transfers, and ERC-20 approvals.
+The Staking page displays the live APR, total staked, reward reserve, user
+position, and pending rewards, and supports token approval, staking, reward
+claims, and unstaking. The Escrow page supports deal creation, recent deal
+listing, seller document-submission status, and oracle resolution.
 
-First, run the development server:
+## Run locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000). Connect an injected wallet
+and switch it to Sepolia (chain ID `11155111`) to read balances and submit
+transactions. Confirm transaction details in your wallet before signing.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Staking amounts use 18 token decimals. Because VSC applies a 0.5% transfer burn,
+the staked position is credited with the net amount received; outgoing unstake
+and reward transfers are also burn-adjusted. The interface previews those
+amounts and prevents reward claims when the observed reserve is below the
+pending reward amount.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Escrow deposits are recorded at the net amount received by the contract, and
+the eventual release/refund transfer is subject to the token burn. The contract
+only stores a document-submission flag; it does not upload, hash, or retain
+documents. Resolution is restricted to the configured oracle.
 
-## Learn More
+## Deployment configuration
 
-To learn more about Next.js, take a look at the following resources:
+The frontend uses the deployed Sepolia addresses in `src/config/contracts.ts`.
+Wallet reads and writes are sent through the connected wallet provider; this app
+does not require an RPC API key. The interface is testnet-only and does not
+provide WalletConnect support.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Governance and Presale remain roadmap placeholders and are not active integrations yet.
