@@ -15,7 +15,7 @@ describe("Escrow", function () {
     [treasury, buyer, seller, oracle, other] = await ethers.getSigners();
 
     const Token = await ethers.getContractFactory("VistacionToken");
-    token = await Token.deploy(treasury.address, 0);
+    token = await Token.deploy(treasury.address, 50);
     await token.waitForDeployment();
 
     const Escrow = await ethers.getContractFactory("Escrow");
@@ -27,13 +27,15 @@ describe("Escrow", function () {
   });
 
   it("creates a deal and holds the buyer's tokens in escrow", async function () {
+    const receivedAmount = amount * 9_950n / 10_000n;
+
     await expect(escrow.connect(buyer).createEscrow(seller.address, amount))
-      .to.changeTokenBalances(token, [buyer, escrow], [-amount, amount]);
+      .to.changeTokenBalances(token, [buyer, escrow], [-amount, receivedAmount]);
 
     const deal = await escrow.deals(0);
     expect(deal.buyer).to.equal(buyer.address);
     expect(deal.seller).to.equal(seller.address);
-    expect(deal.amount).to.equal(amount);
+    expect(deal.amount).to.equal(receivedAmount);
     expect(deal.docsSubmitted).to.equal(false);
     expect(deal.resolved).to.equal(false);
     expect(await escrow.nextId()).to.equal(1);
@@ -58,9 +60,11 @@ describe("Escrow", function () {
   it("releases funds to the seller after oracle approval", async function () {
     await escrow.connect(buyer).createEscrow(seller.address, amount);
     await escrow.connect(seller).submitDocs(0);
+    const receivedAmount = amount * 9_950n / 10_000n;
+    const sellerAmount = receivedAmount * 9_950n / 10_000n;
 
     await expect(escrow.connect(oracle).verifyAndRelease(0, true))
-      .to.changeTokenBalances(token, [escrow, seller], [-amount, amount]);
+      .to.changeTokenBalances(token, [escrow, seller], [-receivedAmount, sellerAmount]);
 
     expect((await escrow.deals(0)).resolved).to.equal(true);
   });
@@ -68,9 +72,11 @@ describe("Escrow", function () {
   it("refunds the buyer when the oracle rejects the submitted documents", async function () {
     await escrow.connect(buyer).createEscrow(seller.address, amount);
     await escrow.connect(seller).submitDocs(0);
+    const receivedAmount = amount * 9_950n / 10_000n;
+    const refundAmount = receivedAmount * 9_950n / 10_000n;
 
     await expect(escrow.connect(oracle).verifyAndRelease(0, false))
-      .to.changeTokenBalances(token, [escrow, buyer], [-amount, amount]);
+      .to.changeTokenBalances(token, [escrow, buyer], [-receivedAmount, refundAmount]);
 
     expect((await escrow.deals(0)).resolved).to.equal(true);
   });

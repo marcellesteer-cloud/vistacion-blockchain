@@ -1,17 +1,13 @@
 const hre = require("hardhat");
-const fs = require("fs");
-
-function saveAddress(key, address) {
-  const path = "deploy-addresses.json";
-  const data = fs.existsSync(path) ? JSON.parse(fs.readFileSync(path, "utf8")) : {};
-  data.network = hre.network.name;
-  data[key] = address;
-  fs.writeFileSync(path, `${JSON.stringify(data, null, 2)}\n`);
-}
+const { saveAddress } = require("./deployment-registry");
 
 async function main() {
   const [deployer] = await hre.ethers.getSigners();
+  if (!deployer) throw new Error("No deployer signer configured for this network");
   const treasury = process.env.TREASURY_ADDRESS || deployer.address;
+  if (!hre.ethers.isAddress(treasury) || treasury === hre.ethers.ZeroAddress) {
+    throw new Error("TREASURY_ADDRESS must be a valid nonzero address");
+  }
   const burnBasisPoints = 50; // 0.50%
 
   console.log("Deploying token with:", deployer.address);
@@ -20,7 +16,7 @@ async function main() {
   await token.waitForDeployment();
 
   const address = await token.getAddress();
-  saveAddress("token", address);
+  saveAddress(hre, "token", address, ["staking", "escrow", "governance", "ico"]);
   console.log("VistacionToken deployed to:", address);
 }
 

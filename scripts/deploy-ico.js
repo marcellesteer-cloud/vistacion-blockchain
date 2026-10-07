@@ -1,28 +1,20 @@
 const hre = require("hardhat");
-const fs = require("fs");
-
-function loadAddresses() {
-  if (!fs.existsSync("deploy-addresses.json")) {
-    throw new Error("deploy-addresses.json not found; deploy the token first");
-  }
-  return JSON.parse(fs.readFileSync("deploy-addresses.json", "utf8"));
-}
-
-function saveAddress(key, address) {
-  const data = loadAddresses();
-  data.network = hre.network.name;
-  data[key] = address;
-  fs.writeFileSync("deploy-addresses.json", `${JSON.stringify(data, null, 2)}\n`);
-}
+const { loadAddresses, requireDeployedContract, saveAddress } = require("./deployment-registry");
 
 async function main() {
   const [deployer] = await hre.ethers.getSigners();
-  const { token } = loadAddresses();
+  if (!deployer) throw new Error("No deployer signer configured for this network");
+  const { token } = loadAddresses(hre);
   const treasury = process.env.TREASURY_ADDRESS || deployer.address;
-  if (!token) throw new Error("Token address is missing; deploy the token first");
+  await requireDeployedContract(hre, token, "Token");
+  if (!hre.ethers.isAddress(treasury) || treasury === hre.ethers.ZeroAddress) {
+    throw new Error("TREASURY_ADDRESS must be a valid nonzero address");
+  }
 
   const priceWeiPerToken = hre.ethers.parseEther("0.0005");
-  const start = Math.floor(Date.now() / 1000) + 3600;
+  const latestBlock = await hre.ethers.provider.getBlock("latest");
+  if (!latestBlock) throw new Error("Unable to read the latest block timestamp");
+  const start = latestBlock.timestamp + 3600;
   const end = start + 7 * 24 * 3600;
 
   const ICO = await hre.ethers.getContractFactory("ICO");
@@ -30,7 +22,7 @@ async function main() {
   await ico.waitForDeployment();
 
   const address = await ico.getAddress();
-  saveAddress("ico", address);
+  saveAddress(hre, "ico", address);
   console.log("ICO deployed to:", address);
 }
 

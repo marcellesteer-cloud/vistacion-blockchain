@@ -1,30 +1,16 @@
 const hre = require("hardhat");
-const fs = require("fs");
-
-function loadAddresses() {
-  if (!fs.existsSync("deploy-addresses.json")) {
-    throw new Error("deploy-addresses.json not found; deploy the token first");
-  }
-  return JSON.parse(fs.readFileSync("deploy-addresses.json", "utf8"));
-}
-
-function saveAddress(key, address) {
-  const data = loadAddresses();
-  data.network = hre.network.name;
-  data[key] = address;
-  fs.writeFileSync("deploy-addresses.json", `${JSON.stringify(data, null, 2)}\n`);
-}
+const { loadAddresses, requireDeployedContract, saveAddress } = require("./deployment-registry");
 
 async function main() {
-  const { token } = loadAddresses();
-  if (!token) throw new Error("Token address is missing; deploy the token first");
+  const { token } = loadAddresses(hre);
+  await requireDeployedContract(hre, token, "Token");
 
   const Governance = await hre.ethers.getContractFactory("Governance");
   const governance = await Governance.deploy(token);
   await governance.waitForDeployment();
 
   const address = await governance.getAddress();
-  saveAddress("governance", address);
+  saveAddress(hre, "governance", address);
   console.log("Governance deployed to:", address);
 }
 

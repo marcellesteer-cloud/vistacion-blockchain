@@ -19,7 +19,7 @@ contract VistacionToken is ERC20, ERC20Burnable, AccessControl, Pausable {
 
     constructor(address treasury, uint256 burnBasisPoints_) ERC20("Vistacoin", "VSC") {
         require(treasury != address(0), "treasury is zero");
-        require(burnBasisPoints_ <= 10_000, "burn too high");
+        require(burnBasisPoints_ < 10_000, "burn too high");
 
         burnBasisPoints = burnBasisPoints_;
 
@@ -36,7 +36,7 @@ contract VistacionToken is ERC20, ERC20Burnable, AccessControl, Pausable {
         external
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
-        require(newBurnBasisPoints <= 10_000, "burn too high");
+        require(newBurnBasisPoints < 10_000, "burn too high");
         burnBasisPoints = newBurnBasisPoints;
     }
 

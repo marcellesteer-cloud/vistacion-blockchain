@@ -2,7 +2,7 @@ const { expect } = require("chai");
 const { ethers } = require("hardhat");
 const { time } = require("@nomicfoundation/hardhat-network-helpers");
 
-describe("VSCPresale", function () {
+describe("ICO", function () {
   let token;
   let presale;
   let treasury;
@@ -14,7 +14,7 @@ describe("VSCPresale", function () {
     [treasury, buyer] = await ethers.getSigners();
 
     const Token = await ethers.getContractFactory("VistacionToken");
-    token = await Token.deploy(treasury.address, 0);
+    token = await Token.deploy(treasury.address, 50);
     await token.waitForDeployment();
 
     const now = await time.latest();
@@ -22,7 +22,7 @@ describe("VSCPresale", function () {
     end = start + 3600;
     const price = ethers.parseEther("0.0005");
 
-    const Presale = await ethers.getContractFactory("VSCPresale");
+    const Presale = await ethers.getContractFactory("ICO");
     presale = await Presale.deploy(
       await token.getAddress(),
       price,
@@ -37,7 +37,11 @@ describe("VSCPresale", function () {
 
   it("sells tokens for ETH and forwards the payment to the treasury", async function () {
     const payment = ethers.parseEther("1");
-    const expectedTokens = ethers.parseEther("2000");
+    const tokensCharged = ethers.parseEther("2000");
+    const inventorySpent = (
+      tokensCharged * 10_000n + 9_950n - 1n
+    ) / 9_950n;
+    const expectedTokensReceived = inventorySpent - inventorySpent * 50n / 10_000n;
 
     await expect(presale.connect(buyer).buy({ value: payment }))
       .to.be.revertedWith("sale inactive");
@@ -46,8 +50,11 @@ describe("VSCPresale", function () {
     const treasuryBalanceBefore = await ethers.provider.getBalance(treasury.address);
     await presale.connect(buyer).buy({ value: payment });
 
-    expect(await token.balanceOf(buyer.address)).to.equal(expectedTokens);
-    expect(await token.balanceOf(await presale.getAddress())).to.equal(ethers.parseEther("3000"));
+    expect(await token.balanceOf(buyer.address)).to.equal(expectedTokensReceived);
+    expect(expectedTokensReceived).to.be.at.least(tokensCharged);
+    expect(await token.balanceOf(await presale.getAddress())).to.equal(
+      ethers.parseEther("4975") - inventorySpent
+    );
     expect(await ethers.provider.getBalance(treasury.address)).to.equal(treasuryBalanceBefore + payment);
   });
 

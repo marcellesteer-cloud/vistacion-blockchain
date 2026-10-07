@@ -1,6 +1,7 @@
 const hre = require("hardhat");
 const fs = require("fs");
 require("dotenv").config();
+const { grossAmountForNet } = require("./transfer-fees");
 
 function loadAddresses() {
   if (!fs.existsSync("deploy-addresses.json")) {
@@ -8,6 +9,11 @@ function loadAddresses() {
   }
 
   const addresses = JSON.parse(fs.readFileSync("deploy-addresses.json", "utf8"));
+  if (addresses.network !== hre.network.name) {
+    throw new Error(
+      `Address registry targets ${addresses.network || "an unknown network"}, not ${hre.network.name}`
+    );
+  }
   for (const key of ["token", "staking", "ico"]) {
     if (!addresses[key] || !hre.ethers.isAddress(addresses[key])) {
       throw new Error(`A valid ${key} address is required in deploy-addresses.json`);
@@ -19,7 +25,7 @@ function loadAddresses() {
 
 function requiredAddress(name) {
   const value = process.env[name];
-  if (!value || !hre.ethers.isAddress(value)) {
+  if (!value || !hre.ethers.isAddress(value) || value === hre.ethers.ZeroAddress) {
     throw new Error(`${name} must be a valid address`);
   }
   return value;
@@ -51,6 +57,7 @@ async function main() {
   const addresses = loadAddresses();
   const configuredTreasury = requiredAddress("TREASURY_ADDRESS");
   const [treasury] = await hre.ethers.getSigners();
+  if (!treasury) throw new Error("No treasury signer configured for Sepolia");
 
   if (configuredTreasury.toLowerCase() !== treasury.address.toLowerCase()) {
     throw new Error(
@@ -67,48 +74,57 @@ async function main() {
   const stakingAmount = requiredPositiveAmount("STAKING_FUND_AMOUNT", "1000000");
   const icoAmount = requiredPositiveAmount("ICO_SALE_AMOUNT", "5000000");
   const token = await hre.ethers.getContractAt("VistacionToken", addresses.token, treasury);
+  const staking = await hre.ethers.getContractAt("Staking", addresses.staking, treasury);
+  const burnBasisPoints = await token.burnBasisPoints();
+  if (burnBasisPoints >= 10_000n) {
+    throw new Error("Token burn rate must be below 10000 basis points to fund contracts");
+  }
 
   console.log(`Treasury: ${treasury.address}`);
   console.log(`Token: ${addresses.token}`);
-  console.log(`Staking funding target: ${hre.ethers.formatEther(stakingAmount)} VSC`);
-  console.log(`ICO allowance target: ${hre.ethers.formatEther(icoAmount)} VSC`);
+  console.log(`Token transfer burn: ${burnBasisPoints} bps`);
+  console.log(`Staking reward reserve target: ${hre.ethers.formatEther(stakingAmount)} VSC`);
+  console.log(`ICO inventory target: ${hre.ethers.formatEther(icoAmount)} VSC`);
 
-  let stakingBalance = await token.balanceOf(addresses.staking);
-  let allowance = await token.allowance(treasury.address, addresses.ico);
-  console.log(`Staking balance before: ${hre.ethers.formatEther(stakingBalance)} VSC`);
-  console.log(`ICO allowance before: ${hre.ethers.formatEther(allowance)} VSC`);
+  let rewardPool = await staking.rewardPool();
+  console.log(`Staking reward reserve before: ${hre.ethers.formatEther(rewardPool)} VSC`);
 
-  // VistacionToken burns a transfer fee, so verify after each transfer and top up
-  // again if necessary rather than assuming the requested amount arrives intact.
-  let attempts = 0;
-  while (stakingBalance < stakingAmount && attempts < 3) {
-    const shortfall = stakingAmount - stakingBalance;
-    const transfer = await token.transfer(addresses.staking, shortfall);
-    console.log(`Funding Staking (attempt ${attempts + 1}): ${transfer.hash}`);
-    await transfer.wait();
-    stakingBalance = await token.balanceOf(addresses.staking);
-    attempts += 1;
-  }
+  if (rewardPool < stakingAmount) {
+    const shortfall = stakingAmount - rewardPool;
+    const grossAmount = grossAmountForNet(shortfall, burnBasisPoints);
+    const allowance = await token.allowance(treasury.address, addresses.staking);
+    if (allowance < grossAmount) {
+      const approval = await token.approve(addresses.staking, grossAmount);
+      console.log(`Approving Staking reward funding: ${approval.hash}`);
+      await approval.wait();
+    }
 
-  if (stakingBalance < stakingAmount) {
-    throw new Error("Unable to reach the requested Staking balance after three transfers");
-  }
-
-  if (allowance < icoAmount) {
-    const approval = await token.approve(addresses.ico, icoAmount);
-    console.log(`Approving ICO: ${approval.hash}`);
-    await approval.wait();
-    allowance = await token.allowance(treasury.address, addresses.ico);
+    const funding = await staking.fundRewards(grossAmount);
+    console.log(`Funding Staking rewards: ${funding.hash}`);
+    await funding.wait();
+    rewardPool = await staking.rewardPool();
   } else {
-    console.log("ICO already has the requested allowance; no approval needed.");
+    console.log("Staking reward reserve already meets the target; no funding needed.");
   }
 
-  const stakingAfter = await token.balanceOf(addresses.staking);
-  const allowanceAfter = await token.allowance(treasury.address, addresses.ico);
-  console.log(`Staking balance after: ${hre.ethers.formatEther(stakingAfter)} VSC`);
-  console.log(`ICO allowance after: ${hre.ethers.formatEther(allowanceAfter)} VSC`);
+  let icoBalance = await token.balanceOf(addresses.ico);
+  console.log(`ICO inventory before: ${hre.ethers.formatEther(icoBalance)} VSC`);
+  if (icoBalance < icoAmount) {
+    const grossAmount = grossAmountForNet(icoAmount - icoBalance, burnBasisPoints);
+    const funding = await token.transfer(addresses.ico, grossAmount);
+    console.log(`Funding ICO inventory: ${funding.hash}`);
+    await funding.wait();
+    icoBalance = await token.balanceOf(addresses.ico);
+  } else {
+    console.log("ICO inventory already meets the target; no funding needed.");
+  }
 
-  if (stakingAfter < stakingAmount || allowanceAfter < icoAmount) {
+  const stakingAfter = await staking.rewardPool();
+  const icoAfter = await token.balanceOf(addresses.ico);
+  console.log(`Staking reward reserve after: ${hre.ethers.formatEther(stakingAfter)} VSC`);
+  console.log(`ICO inventory after: ${hre.ethers.formatEther(icoAfter)} VSC`);
+
+  if (stakingAfter < stakingAmount || icoAfter < icoAmount) {
     throw new Error("Post-deployment treasury verification failed");
   }
 

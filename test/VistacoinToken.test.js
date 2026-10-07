@@ -27,7 +27,9 @@ describe("VistacionToken", function () {
   });
 
   it("allows the admin to change the burn rate within the valid range", async function () {
-    await expect(token.setBurnBasisPoints(10_001)).to.be.revertedWith("burn too high");
+    const Token = await ethers.getContractFactory("VistacionToken");
+    await expect(Token.deploy(treasury.address, 10_000)).to.be.revertedWith("burn too high");
+    await expect(token.setBurnBasisPoints(10_000)).to.be.revertedWith("burn too high");
     await expect(token.connect(recipient).setBurnBasisPoints(100))
       .to.be.revertedWithCustomError(token, "AccessControlUnauthorizedAccount");
 

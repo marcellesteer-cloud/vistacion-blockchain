@@ -24,11 +24,17 @@ Actors:
 
 The deployment scripts write addresses to `deploy-addresses.json` and must be run in dependency order: token, staking, escrow, governance, then ICO.
 
-After deployment, the treasury must complete both funding operations before production-like use:
+After deployment, the treasury must complete both funding operations before testing the staking and ICO flows:
 
-1. Transfer an approved VSC allocation to **Staking**, which pays rewards from its own token balance.
-2. Call `approve(icoAddress, saleInventory)` on **VistacionToken** from the treasury, allowing **ICO** to distribute the intended sale inventory.
+1. Approve **Staking** to pull the reward funding and call `fundRewards`. The contract records the amount actually received after the token burn as its reward reserve.
+2. Transfer VSC inventory directly to **ICO**. The sale requires a token balance; an allowance by itself does not fund it.
 
-Use amounts appropriate for the configured APR, sale price, sale duration, and available treasury balance. Confirm the staking balance and ICO allowance on Sepolia before enabling users or announcing the sale. The address registry contains deployment outputs, not funding status.
+`STAKING_FUND_AMOUNT` and `ICO_SALE_AMOUNT` are target balances after token transfer burn. The setup script grosses up the transfers and verifies the final reward reserve and sale inventory. The address registry contains deployment outputs, not funding status.
+
+## Transfer-fee accounting
+
+VSC burns the configured fee on transfers. Staking positions and Escrow deals record the amount received by the contract, rather than the requested transfer amount. Staking withdrawals/rewards and escrow releases/refunds deliver the transferred amount less the burn. The ICO grosses up the outgoing transfer so the buyer receives the quoted quantity; the burn is charged against its sale inventory.
+
+Redeploy contracts after changing their source: existing on-chain addresses continue running their originally deployed bytecode.
 
 This design keeps VSC as the single unit of value while separating concerns into focused contracts.
