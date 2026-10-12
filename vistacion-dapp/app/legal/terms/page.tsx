@@ -6,7 +6,7 @@ export default function TermsPage() {
   return (
     <>
       <h1>Terms &amp; Conditions</h1>
-      <p>Last updated: [DATE]. Operator: [COMPANY NAME], company number [NUMBER], registered office [ADDRESS] (&ldquo;we&rdquo;, &ldquo;us&rdquo;). Contact: [EMAIL].</p>
+      <p>Last updated: [DATE]. Operator: Aerovista Club, company number [NUMBER], registered office [ADDRESS] (&ldquo;we&rdquo;, &ldquo;us&rdquo;). Contact: [EMAIL].</p>
 
       <h2>1. About this service</h2>
       <p>Vistacoin provides (a) a demonstration of an escrow workflow using fictional data, (b) a testnet token and smart-contract interface on the Ethereum Sepolia test network, and (c) a private customer-management workspace for authorised staff. By using the site you agree to these terms.</p>

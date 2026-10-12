@@ -6,7 +6,7 @@ export default function PrivacyPage() {
   return (
     <>
       <h1>Privacy Notice</h1>
-      <p>Last updated: [DATE]. Data controller: [COMPANY NAME], [ADDRESS]. Contact for privacy matters: [EMAIL]. ICO registration number: [NUMBER — confirm whether registration is required]. This notice is written for UK GDPR and the Data Protection Act 2018.</p>
+      <p>Last updated: [DATE]. Data controller: Aerovista Club, [ADDRESS]. Contact for privacy matters: [EMAIL]. ICO registration number: [NUMBER — confirm whether registration is required]. This notice is written for UK GDPR and the Data Protection Act 2018.</p>
 
       <h2>1. What we collect</h2>
       <ul>
