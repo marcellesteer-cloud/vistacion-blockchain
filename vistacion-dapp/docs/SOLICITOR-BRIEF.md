@@ -1,6 +1,8 @@
-# Vistacoin / Aerovista Club: Solicitor Review Brief
+﻿# Vistacoin / Aerovista Club: Solicitor Review Brief
 
 Prepared for legal review. **Nothing here is legal advice. The site must not take real money until a solicitor signs off.**
+
+> **The platform must not accept custody of client funds, cryptoassets, bullion, aircraft deposits, mineral payments, or any transaction consideration until regulatory analysis has been completed and written legal sign-off obtained.**
 
 ## Operator
 - Aerovista Club, 33 Fairhills, Irlam, Manchester M44 6BA
@@ -33,3 +35,17 @@ Prepared for legal review. **Nothing here is legal advice. The site must not tak
 - Mainnet deployment plan and key custody.
 - KYC/AML tooling and sanctions screening before any live escrow.
 - Fee-collection logic implemented, tested and audited, matching the approved Terms.
+
+## Additional questions
+9. **Financial promotions:** Do website content, token references, projected returns, staking rewards, referral programmes or investment-related statements constitute financial promotions under UK law?
+10. **Consumers vs businesses:** Is the platform business-to-business only, or will consumers be permitted? Consumer law is substantially more restrictive.
+11. **Jurisdictions:** Review the UK, DRC, Uganda, UAE (if future operations occur) and customer jurisdictions. Review cross-border enforceability of contracts and dispute resolution provisions.
+12. **Insurance:** What professional indemnity, cyber liability, crime, D&O, escrow errors and omissions, and AML-related cover should be maintained?
+13. **Bullion and minerals:** Enhanced AML duties: source of funds, sanctions, PEPs, suspicious activity reporting, record retention.
+14. **Data protection implementation:** Retention schedule, subject access request procedure, lawful basis mapping, deletion procedure, and processor agreements (Supabase, Vercel, email providers).
+
+## Lowest-risk operating model (recommended until sign-off)
+- Onboarding and introductions platform only.
+- No custody, no client money account, no token sales.
+- Fees invoiced manually under solicitor-approved terms.
+- KYC completed before introducing counterparties.
