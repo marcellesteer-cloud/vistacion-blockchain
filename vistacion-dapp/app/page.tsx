@@ -406,6 +406,54 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="aerovista-section" aria-labelledby="aerovista-title">
+        <div className="container">
+          <h2 id="aerovista-title">Aero Vista Club</h2>
+          <p className="subtitle">
+            Private Aviation · Luxury Yachting · Global Brokerage Services
+          </p>
+          <p>
+            Aero Vista Club is the premium brokerage division of the Aerovista Group,
+            connecting clients worldwide with private aircraft, luxury yachts, charter
+            services, and bespoke acquisition solutions.
+          </p>
+          <p>
+            Through our trusted international network, we assist private individuals,
+            corporations, family offices, and investors in sourcing and acquiring
+            high-value aviation and maritime assets with complete discretion and
+            professional guidance.
+          </p>
+          <div className="services-grid">
+            <article className="service-card">
+              <h3>Aircraft Sales</h3>
+              <p>Buy and sell private jets, turboprops, helicopters and VIP aircraft.</p>
+            </article>
+            <article className="service-card">
+              <h3>Aircraft Charter</h3>
+              <p>Worldwide private charter solutions tailored to your requirements.</p>
+            </article>
+            <article className="service-card">
+              <h3>Yacht Brokerage</h3>
+              <p>Access luxury yachts, superyachts and bespoke acquisition services.</p>
+            </article>
+            <article className="service-card">
+              <h3>Asset Acquisition</h3>
+              <p>Strategic sourcing and representation for high-value assets worldwide.</p>
+            </article>
+          </div>
+          <div className="cta-container">
+            <a
+              href="https://aerovistaclub.co.uk"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="cta-button"
+            >
+              Visit Aero Vista Club
+            </a>
+          </div>
+        </div>
+      </section>
+
       {error && (
         <div className="notice error-notice" role="alert">
           <span className="notice-icon">!</span>
@@ -616,7 +664,6 @@ export default function Home() {
       <footer className="site-footer">
         <span>VISTACOIN <span className="footer-muted">· SEPOLIA TESTNET</span></span>
         <span>Testnet interface · Verify every transaction in your wallet</span>
-        <a href="https://aerovistaclub.co.uk" target="_blank" rel="noopener noreferrer">Aero Vista Club ↗</a>
         <a href={`${explorer}/address/${CONTRACTS.token}`} target="_blank" rel="noreferrer">Etherscan ↗</a>
       </footer>
     </main>
