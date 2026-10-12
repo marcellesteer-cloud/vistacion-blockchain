@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Vistacoin dApp
 
-## Getting Started
+A Next.js interface for the Vistacoin Sepolia deployment. The current dashboard
+supports injected-wallet connection (MetaMask, Rabby, or Coinbase Wallet),
+read-only VSC and Sepolia ETH balances, VSC transfers, and ERC-20 approvals.
+The Staking page displays the live APR, total staked, reward reserve, user
+position, and pending rewards, and supports token approval, staking, reward
+claims, and unstaking. The Escrow page supports deal creation, recent deal
+listing, seller document-submission status, and oracle resolution. Governance
+supports proposals, token-weighted voting, and result execution. The Presale
+page displays live sale terms and inventory and supports VSC purchases.
 
-First, run the development server:
+## Run locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000). Connect an injected wallet
+and switch it to Sepolia (chain ID `11155111`) to read balances and submit
+transactions. Confirm transaction details in your wallet before signing.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Staking amounts use 18 token decimals. Because VSC applies a 0.5% transfer burn,
+the staked position is credited with the net amount received; outgoing unstake
+and reward transfers are also burn-adjusted. The interface previews those
+amounts and prevents reward claims when the observed reserve is below the
+pending reward amount.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Escrow deposits are recorded at the net amount received by the contract, and
+the eventual release/refund transfer is subject to the token burn. The contract
+only stores a document-submission flag; it does not upload, hash, or retain
+documents. Resolution is restricted to the configured oracle.
 
-## Learn More
+Governance uses current VSC balances when users vote, permits one vote per
+wallet per proposal, and has no quorum or historical balance snapshot.
+Executing a passed proposal only marks it executed; it does not invoke other
+contracts or move funds. The deployed contract has no proposal-count getter, so
+the interface scans indexed proposal records up to its supported display cap.
 
-To learn more about Next.js, take a look at the following resources:
+The sale quote follows the deployed ICO formula and displays the buyer amount,
+estimated inventory debit, and burn. ETH raised is not displayed because the
+deployed sale contract has no cumulative proceeds field or purchase event.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deployment configuration
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The frontend uses the deployed Sepolia addresses in `src/config/contracts.ts`.
+Public contract data is read from the Sepolia public RPC; account-specific
+balances and every transaction use the connected wallet provider. This app
+does not require an RPC API key. The interface is testnet-only and does not
+provide WalletConnect support.
 
-## Deploy on Vercel
+## Publish on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Push this repository to a Git provider that your Vercel account can access.
+2. In Vercel, import the repository and set **Root Directory** to
+   `vistacion-dapp`.
+3. Keep the detected Next.js framework and default install/build commands
+   (`npm install` and `npm run build`).
+4. Deploy. No wallet private keys, API keys, or other secrets are needed.
+5. After the deployment, use the public `*.vercel.app` URL or attach a domain
+   you control in Vercel's project settings.
+6. If using a custom domain, set `NEXT_PUBLIC_SITE_URL` in Vercel's production
+   environment to that full HTTPS origin (for example,
+   `https://app.example.com`) and redeploy.
+7. Check `/robots.txt` and `/sitemap.xml` on the production URL, then submit
+   the sitemap in Google Search Console and Bing Webmaster Tools.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Search indexing is not immediate or guaranteed. Preview deployments and local
+development are configured not to be indexed. The published app still targets
+Sepolia test contracts and must not be presented as a real-money service.

@@ -1,0 +1,12 @@
+export const CONTRACTS = {
+  token: "0x4C48F782aE0f02B5ad466E8b4B1318666f6293eD",
+  staking: "0x76754C72d8110Eef7f75D359C607fB5160D04385",
+  escrow: "0xB89748D2595a97dEAC366E7DBf6Dc2F3C932f3Ed",
+  governance: "0xf76910aD55b0E5DA95B0dA6608fE905a4D29fb5F",
+  ico: "0xe6963849de9A058EFdebc9CeF6528Fe541343E0b",
+} as const;
+
+export const DEPLOYED_SOURCE = {
+  tag: "sepolia-smoke-tested-v1",
+  commit: "be79b44",
+} as const;
