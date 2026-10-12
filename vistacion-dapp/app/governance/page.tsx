@@ -381,7 +381,7 @@ export default function GovernancePage() {
           <span className="brand-mark">V</span><span>VISTACOIN</span>
         </Link>
         <nav className="main-nav" aria-label="Main navigation">
-          <Link className="nav-link" href="/">Dashboard</Link>
+          <Link className="nav-link" href="/dashboard">Dashboard</Link>
           <Link className="nav-link" href="/staking">Staking</Link>
           <Link className="nav-link" href="/escrow">Escrow</Link>
           <Link className="nav-link active" href="/governance">Governance</Link>

@@ -356,7 +356,7 @@ export default function ICOPage() {
       <header className="topbar">
         <Link href="/" className="brand" aria-label="Vistacoin home"><span className="brand-mark">V</span><span>VISTACOIN</span></Link>
         <nav className="main-nav" aria-label="Main navigation">
-          <Link className="nav-link" href="/">Dashboard</Link>
+          <Link className="nav-link" href="/dashboard">Dashboard</Link>
           <Link className="nav-link" href="/staking">Staking</Link>
           <Link className="nav-link" href="/escrow">Escrow</Link>
           <Link className="nav-link" href="/governance">Governance</Link>

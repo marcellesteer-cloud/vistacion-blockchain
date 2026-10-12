@@ -10,7 +10,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: allowIndexing ? "/" : [],
-      disallow: allowIndexing ? undefined : "/",
+      disallow: allowIndexing ? ["/staff"] : "/",
     },
     sitemap: new URL("/sitemap.xml", getSiteUrl()).toString(),
   };

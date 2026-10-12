@@ -5,32 +5,29 @@ import { getSiteUrl } from "@/src/lib/site-url";
 export const metadata: Metadata = {
   metadataBase: getSiteUrl(),
   title: {
-    default: "Vistacoin | Sepolia Testnet App",
+    default: "Vistacoin | Secure Global Trade",
     template: "%s | Vistacoin",
   },
   description:
-    "Explore Vistacoin token, staking, escrow, governance, and sale features on Sepolia testnet. Test assets only; not for real payments.",
+    "Explore the Vistacoin escrow demo and private customer workspace. Real-money escrow is not enabled.",
   applicationName: "Vistacoin",
   keywords: [
     "Vistacoin",
     "VSC",
-    "Sepolia",
-    "testnet",
-    "token dashboard",
-    "escrow prototype",
+    "escrow demo",
+    "customer management",
+    "secure trade",
   ],
   openGraph: {
     type: "website",
     siteName: "Vistacoin",
-    title: "Vistacoin | Sepolia Testnet App",
-    description:
-      "Explore Vistacoin token, staking, escrow, governance, and sale features on Sepolia testnet. Test assets only; not for real payments.",
+    title: "Vistacoin | Secure Global Trade",
+    description: "Explore the Vistacoin escrow demo and private customer workspace. Real-money escrow is not enabled.",
   },
   twitter: {
     card: "summary",
-    title: "Vistacoin | Sepolia Testnet App",
-    description:
-      "Explore Vistacoin features on Sepolia testnet. Test assets only; not for real payments.",
+    title: "Vistacoin | Secure Global Trade",
+    description: "Explore a fictional escrow walkthrough. No real-money escrow is available.",
   },
 };
 
