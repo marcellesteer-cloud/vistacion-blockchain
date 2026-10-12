@@ -17,7 +17,9 @@ export default async function StaffCustomersPage() {
 
   const supabase = await createSupabaseServerClient();
   const { data: { user }, error: authError } = await supabase.auth.getUser();
-  if (authError) throw new Error(`Staff authentication could not be verified: ${authError.message}`);
+  if (authError && authError.name !== "AuthSessionMissingError") {
+    throw new Error(`Staff authentication could not be verified: ${authError.message}`);
+  }
   if (!user) redirect("/staff/login");
 
   const { data: membership, error: membershipError } = await supabase
