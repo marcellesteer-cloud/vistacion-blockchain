@@ -3462,3 +3462,16 @@ select:focus-visible {
 .legal-draft { margin: 16px 0 20px; padding: 12px 15px; border: 1px solid #80642f; border-radius: 6px; background: #1e1a12; color: #e7cf98; font-size: 13px; line-height: 1.6; }
 .legal-links { display: flex; flex-wrap: wrap; gap: 6px 16px; }
 @media (max-width: 620px) { .staff-access-form > div { flex-direction: column; } .staff-access-row { flex-wrap: wrap; } .staff-access-row code { flex-basis: 100%; } }
+
+.mode-switch { display: inline-flex; margin: 18px 0; border: 1px solid #80642f; border-radius: 6px; overflow: hidden; }
+.mode-switch button { padding: 10px 22px; border: 0; background: #0b1523; color: #b6c1cf; font-weight: 700; letter-spacing: 0.06em; cursor: pointer; }
+.mode-switch button.active { background: #e8b44e; color: #101824; }
+.live-request { padding: 22px; border: 1px solid #80642f; border-radius: 8px; background: linear-gradient(145deg, #101d2e, #0b1523); }
+.live-request h2 { margin: 4px 0 14px; }
+.live-request-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 18px; }
+.live-request-form label { display: grid; gap: 5px; color: #b6c1cf; font-size: 12px; }
+.live-request-form input:not([type="checkbox"]), .live-request-form textarea { min-height: 40px; border: 1px solid #3a4a60; border-radius: 5px; padding: 8px 10px; background: #091321; color: #f2f4f8; font: inherit; }
+.live-request-wide { grid-column: 1 / -1; }
+.live-request-consent { display: flex !important; gap: 10px; align-items: flex-start; }
+.live-request-consent a { color: #efc460; }
+@media (max-width: 620px) { .live-request-form { grid-template-columns: 1fr; } }

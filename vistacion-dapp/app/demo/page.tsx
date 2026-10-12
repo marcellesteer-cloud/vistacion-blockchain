@@ -1,5 +1,5 @@
 import Link from "next/link";
-import DemoWalkthrough from "./walkthrough";
+import ModeSwitch from "./mode-switch";
 
 export const metadata = {
   title: "Escrow Demo",
@@ -30,7 +30,7 @@ export default function DemoPage() {
         <p><strong>Demo mode.</strong> All people, amounts, and statuses below are examples, not real offers or transactions.</p>
         <span className="readiness-state">NO FUNDS AT RISK</span>
       </div>
-      <DemoWalkthrough />
+      <ModeSwitch />
       <div className="demo-footer-links">
         <Link href="/" className="text-gold-link">← Back to Vistacoin</Link>
         <Link href="/escrow" className="text-gold-link">Sepolia testnet contract interface <span aria-hidden="true">↗</span></Link>

@@ -5,6 +5,7 @@ import { isSupabaseConfigured } from "@/src/lib/supabase/config";
 import CustomerManager from "./customer-manager";
 import SignOutButton from "./sign-out-button";
 import StaffAccessManager from "./staff-access-manager";
+import OnboardingRequests from "./onboarding-requests";
 
 export const metadata = {
   title: "Customer workspace",
@@ -77,6 +78,7 @@ export default async function StaffCustomersPage() {
         <span className="readiness-state">STAFF ACCESS VERIFIED</span>
       </div>
       {membership.role === "admin" && <StaffAccessManager />}
+      <OnboardingRequests />
       <CustomerManager />
     </main>
   );
