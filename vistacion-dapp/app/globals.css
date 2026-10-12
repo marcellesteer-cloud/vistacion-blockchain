@@ -643,6 +643,304 @@ select:focus-visible {
   margin-top: 3px;
 }
 
+.governance-hero,
+.ico-hero {
+  min-height: 300px;
+  padding-right: 10%;
+}
+
+.governance-hero-stat,
+.ico-status-card {
+  display: flex;
+  min-width: 210px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin-left: 35px;
+  padding: 19px 22px;
+  border: 1px solid #34452f;
+  border-radius: 10px;
+  background:
+    radial-gradient(ellipse at 100% 0%, rgb(118 170 83 / 16%), transparent 60%),
+    #121813;
+}
+
+.governance-hero-stat > strong {
+  margin-top: 4px;
+  color: var(--green);
+  font-size: 31px;
+  letter-spacing: -0.045em;
+}
+
+.governance-hero-stat > strong span {
+  color: #aab5ac;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.ico-status-card > strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 4px;
+  color: #f0c77f;
+  font-size: 17px;
+}
+
+.ico-status-card > strong .status-dot {
+  width: 8px;
+  height: 8px;
+  background: #efbf6c;
+}
+
+.ico-status-card > strong.ico-open {
+  color: #c5e9b2;
+}
+
+.ico-status-card > strong.ico-open .status-dot {
+  background: var(--green);
+  box-shadow: 0 0 9px rgb(169 239 111 / 38%);
+}
+
+.governance-warning {
+  margin-top: 16px;
+}
+
+.governance-dashboard {
+  grid-template-columns: minmax(400px, 1fr) minmax(350px, 0.9fr);
+}
+
+.governance-create-panel,
+.governance-rules-panel {
+  min-height: 390px;
+}
+
+.governance-form {
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.governance-form textarea {
+  display: block;
+  width: 100%;
+  min-height: 110px;
+  resize: vertical;
+  border: 1px solid #303a34;
+  border-radius: 5px;
+  padding: 10px;
+  background: #0d110f;
+  color: var(--foreground);
+  font: inherit;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.governance-form textarea::placeholder {
+  color: #606b63;
+}
+
+.governance-form textarea:focus {
+  border-color: #719254;
+  outline: none;
+}
+
+.textarea-meta {
+  margin-top: 5px;
+  color: var(--subtle);
+  font-size: 8px;
+  text-align: right;
+}
+
+.governance-duration input {
+  padding-right: 55px;
+}
+
+.governance-proposals-panel {
+  margin-bottom: 24px;
+}
+
+.proposal-list {
+  display: grid;
+  gap: 11px;
+}
+
+.proposal-card {
+  padding: 15px;
+  border: 1px solid #2b352f;
+  border-radius: 8px;
+  background: #121714;
+}
+
+.proposal-card-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.proposal-description {
+  margin: 14px 0;
+  color: #e3e9e3;
+  font-size: 12px;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.proposal-vote-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  padding: 12px 0;
+  border-top: 1px solid #26302a;
+  border-bottom: 1px solid #26302a;
+}
+
+.proposal-vote-grid > div {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.proposal-vote-grid span {
+  color: #748077;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.proposal-vote-grid strong {
+  color: #c7d0c8;
+  font-size: 9px;
+  font-weight: 500;
+}
+
+.proposal-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.proposal-action-note {
+  margin-right: auto;
+  color: #929e95;
+  font-size: 9px;
+}
+
+.proposal-actions .submit-button {
+  width: auto;
+  min-height: 32px;
+  justify-content: center;
+  margin: 0;
+  padding: 0 11px;
+  font-size: 9px;
+}
+
+.proposal-for {
+  background: #9fdf80;
+  color: #10170e;
+}
+
+.proposal-against {
+  border: 1px solid #65413c;
+  background: #2a1b19;
+  color: #f0b1a8;
+}
+
+.ico-metrics .metric-card {
+  min-height: 120px;
+}
+
+.ico-dashboard {
+  grid-template-columns: minmax(400px, 1.08fr) minmax(350px, 0.92fr);
+}
+
+.ico-purchase-panel,
+.ico-terms-panel {
+  min-height: 430px;
+}
+
+.ico-purchase-panel > .panel-heading {
+  gap: 12px;
+}
+
+.ico-purchase-panel > .panel-heading .deal-status {
+  white-space: nowrap;
+}
+
+.ico-purchase-content {
+  max-width: 550px;
+}
+
+.ico-purchase-content > label {
+  display: block;
+  margin: 11px 0 6px;
+  color: #9ca79e;
+  font-size: 9px;
+}
+
+.ico-eth-input input {
+  height: 43px;
+  font-size: 14px;
+}
+
+.ico-quote {
+  margin: 13px 0 7px;
+  padding: 0 10px;
+  border: 1px solid #28332c;
+  border-radius: 7px;
+  background: #101512;
+}
+
+.ico-quote .detail-row:last-child {
+  border-bottom: 0;
+}
+
+.ico-buy-button {
+  min-height: 42px;
+  margin-top: 13px;
+  font-size: 11px;
+}
+
+.ico-accounting-note {
+  justify-content: flex-start;
+  line-height: 1.5;
+}
+
+.ico-accounting-note .release-check {
+  display: grid;
+  width: 15px;
+  height: 15px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid #41513e;
+  border-radius: 50%;
+  font-size: 9px;
+}
+
+.ico-terms-panel .detail-row {
+  min-height: 48px;
+}
+
+.ico-terms-panel .detail-row strong,
+.ico-terms-panel .detail-row a {
+  max-width: 62%;
+  font-size: 9px;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.ico-total-raised-note {
+  margin-top: 11px;
+  color: #808c82;
+  font-size: 9px;
+  line-height: 1.55;
+}
+
 .escrow-safety-note {
   display: flex;
   align-items: flex-start;
@@ -1497,6 +1795,24 @@ select:focus-visible {
     font-size: 39px;
   }
 
+  .governance-dashboard,
+  .ico-dashboard {
+    grid-template-columns: 1fr;
+  }
+
+  .governance-hero,
+  .ico-hero {
+    padding-right: 4%;
+    padding-left: 3%;
+  }
+
+  .governance-hero-stat,
+  .ico-status-card {
+    min-width: 180px;
+    margin-left: 10px;
+    padding: 15px;
+  }
+
   .escrow-dashboard {
     grid-template-columns: 1fr;
   }
@@ -1590,6 +1906,18 @@ select:focus-visible {
     margin-left: 0;
   }
 
+  .governance-hero,
+  .ico-hero {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 23px;
+  }
+
+  .governance-hero-stat,
+  .ico-status-card {
+    margin-left: 0;
+  }
+
   .hero-actions {
     align-items: flex-start;
     flex-direction: column;
@@ -1624,6 +1952,23 @@ select:focus-visible {
 
   .escrow-create-forms {
     grid-template-columns: 1fr;
+  }
+
+  .proposal-vote-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .proposal-actions {
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+
+  .proposal-action-note {
+    width: 100%;
+  }
+
+  .proposal-actions .submit-button {
+    flex: 1 1 auto;
   }
 
   .escrow-actions-panel,

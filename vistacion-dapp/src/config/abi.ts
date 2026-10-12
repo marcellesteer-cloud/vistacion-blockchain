@@ -28,3 +28,19 @@ export const ESCROW_ABI = [
   "function submitDocs(uint256 id)",
   "function verifyAndRelease(uint256 id, bool ok)",
 ] as const;
+
+export const GOVERNANCE_ABI = [
+  "function proposals(uint256 id) view returns (string description, uint256 endTime, uint256 forVotes, uint256 againstVotes, bool executed)",
+  "function voted(uint256 id, address account) view returns (bool)",
+  "function createProposal(string description, uint256 duration) returns (uint256 id)",
+  "function vote(uint256 id, bool support)",
+  "function execute(uint256 id)",
+] as const;
+
+export const ICO_ABI = [
+  "function treasury() view returns (address)",
+  "function priceWeiPerToken() view returns (uint256)",
+  "function start() view returns (uint256)",
+  "function end() view returns (uint256)",
+  "function buy() payable",
+] as const;

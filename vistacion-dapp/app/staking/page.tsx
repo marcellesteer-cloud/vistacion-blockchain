@@ -16,6 +16,7 @@ import {
   getInjectedWallets,
   type InjectedWallet,
 } from "@/src/lib/injected-wallet";
+import { getSepoliaReadProvider } from "@/src/lib/sepolia-read-provider";
 
 interface StakingData {
   aprBps: bigint;
@@ -90,17 +91,17 @@ export default function StakingPage() {
   const [stakeAmount, setStakeAmount] = useState("");
   const [unstakeAmount, setUnstakeAmount] = useState("");
 
-  const isSepolia = chainId === SEPOLIA_CHAIN_ID;
+  const isSepolia = !activeWallet || chainId === SEPOLIA_CHAIN_ID;
   const selectedWalletOption = wallets[selectedWallet];
   const explorer = "https://sepolia.etherscan.io";
 
   const refresh = useCallback(async () => {
-    if (!activeWallet || !account) return;
-
     setLoading(true);
     setError("");
     try {
-      const provider = new BrowserProvider(activeWallet.provider, "any");
+      const provider = activeWallet
+        ? new BrowserProvider(activeWallet.provider, "any")
+        : getSepoliaReadProvider();
       const network = await provider.getNetwork();
       const activeChainId = Number(network.chainId);
       setChainId(activeChainId);
@@ -124,10 +125,12 @@ export default function StakingPage() {
         staking.aprBps() as Promise<bigint>,
         staking.totalStaked() as Promise<bigint>,
         staking.rewardPool() as Promise<bigint>,
-        staking.positions(account) as Promise<readonly [bigint, bigint, bigint]>,
-        staking.pendingRewards(account) as Promise<bigint>,
-        token.balanceOf(account) as Promise<bigint>,
-        token.allowance(account, CONTRACTS.staking) as Promise<bigint>,
+        account
+          ? staking.positions(account) as Promise<readonly [bigint, bigint, bigint]>
+          : Promise.resolve([BigInt(0), BigInt(0), BigInt(0)] as const),
+        account ? staking.pendingRewards(account) as Promise<bigint> : Promise.resolve(BigInt(0)),
+        account ? token.balanceOf(account) as Promise<bigint> : Promise.resolve(BigInt(0)),
+        account ? token.allowance(account, CONTRACTS.staking) as Promise<bigint> : Promise.resolve(BigInt(0)),
         token.burnBasisPoints() as Promise<bigint>,
       ]);
 
@@ -173,7 +176,6 @@ export default function StakingPage() {
   }, [activeWallet, refresh]);
 
   useEffect(() => {
-    if (!activeWallet || !account) return;
     const initialRefresh = window.setTimeout(() => void refresh(), 0);
     const interval = window.setInterval(() => void refresh(), 20_000);
     return () => {
@@ -389,9 +391,9 @@ export default function StakingPage() {
   return (
     <main className="app-shell">
       <header className="topbar">
-        <Link href="/" className="brand" aria-label="Vistacion home">
+        <Link href="/" className="brand" aria-label="Vistacoin home">
           <span className="brand-mark">V</span>
-          <span>VISTACION</span>
+          <span>VISTACOIN</span>
         </Link>
         <nav className="main-nav" aria-label="Main navigation">
           <Link className="nav-link" href="/">Dashboard</Link>
@@ -511,7 +513,7 @@ export default function StakingPage() {
             <span className="metric-icon">V</span>
           </div>
           <div className="metric-value">
-            {data ? formatTokenAmount(data.position) : "—"} <span>VSC</span>
+            {data && account ? formatTokenAmount(data.position) : "—"} <span>VSC</span>
           </div>
           <div className="metric-foot">
             {account ? shortenAddress(account) : "Connect wallet to view your position"}
@@ -568,7 +570,7 @@ export default function StakingPage() {
               <div className="staking-reward-highlight">
                 <div>
                   <span className="metric-label">ACCRUED REWARDS</span>
-                  <strong>{data ? formatTokenAmount(data.pendingRewards) : "—"} <span>VSC</span></strong>
+                  <strong>                  {data && account ? formatTokenAmount(data.pendingRewards) : "—"} <span>VSC</span></strong>
                   <small>
                     {data ? `≈ ${pendingNet} VSC received after ${Number(data.burnBasisPoints) / 100}% burn` : "Loading live staking position"}
                   </small>
@@ -578,6 +580,8 @@ export default function StakingPage() {
                   onClick={() => void claimRewards()}
                   disabled={
                     working ||
+                    !activeWallet ||
+                    !account ||
                     !data ||
                     data.pendingRewards <= BigInt(0) ||
                     data.pendingRewards > data.rewardPool
@@ -594,11 +598,11 @@ export default function StakingPage() {
               <div className="detail-list staking-position-details">
                 <div className="detail-row">
                   <span>Wallet VSC balance</span>
-                  <strong>{data ? `${formatTokenAmount(data.tokenBalance)} VSC` : "Loading…"}</strong>
+                  <strong>{data && account ? `${formatTokenAmount(data.tokenBalance)} VSC` : "Connect wallet"}</strong>
                 </div>
                 <div className="detail-row">
                   <span>Approved allowance</span>
-                  <strong>{data ? `${formatTokenAmount(data.allowance)} VSC` : "Loading…"}</strong>
+                  <strong>{data && account ? `${formatTokenAmount(data.allowance)} VSC` : "Connect wallet"}</strong>
                 </div>
                 <div className="detail-row">
                   <span>Staking contract</span>
@@ -754,7 +758,7 @@ export default function StakingPage() {
       </section>
 
       <footer className="site-footer">
-        <span>VISTACION <span className="footer-muted">· SEPOLIA TESTNET</span></span>
+        <span>VISTACOIN <span className="footer-muted">· SEPOLIA TESTNET</span></span>
         <span>Testnet interface · Verify every transaction in your wallet</span>
         <a href={`${explorer}/address/${CONTRACTS.staking}`} target="_blank" rel="noreferrer">
           Etherscan ↗

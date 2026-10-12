@@ -18,6 +18,7 @@ import {
   getInjectedWallets,
   type InjectedWallet,
 } from "@/src/lib/injected-wallet";
+import { getSepoliaReadProvider } from "@/src/lib/sepolia-read-provider";
 
 interface TokenData {
   name: string;
@@ -76,7 +77,7 @@ export default function Home() {
   const [spender, setSpender] = useState("");
   const [approvalAmount, setApprovalAmount] = useState("");
 
-  const isSepolia = chainId === SEPOLIA_CHAIN_ID;
+  const isSepolia = !activeWallet || chainId === SEPOLIA_CHAIN_ID;
   const connectedWallet = wallets[selectedWallet];
   let transferPreview = "";
   if (transferAmount && /^\d+(\.\d+)?$/.test(transferAmount)) {
@@ -92,12 +93,12 @@ export default function Home() {
   }
 
   const refresh = useCallback(async () => {
-    if (!activeWallet || !account) return;
-
     setLoading(true);
     setError("");
     try {
-      const provider = new BrowserProvider(activeWallet.provider, "any");
+      const provider = activeWallet
+        ? new BrowserProvider(activeWallet.provider, "any")
+        : getSepoliaReadProvider();
       const network = await provider.getNetwork();
       const activeChainId = Number(network.chainId);
       setChainId(activeChainId);
@@ -112,9 +113,9 @@ export default function Home() {
           token.name() as Promise<string>,
           token.symbol() as Promise<string>,
           token.totalSupply() as Promise<bigint>,
-          token.balanceOf(account) as Promise<bigint>,
+          account ? token.balanceOf(account) as Promise<bigint> : Promise.resolve(BigInt(0)),
           token.burnBasisPoints() as Promise<bigint>,
-          provider.getBalance(account),
+          account ? provider.getBalance(account) : Promise.resolve(BigInt(0)),
         ]);
 
       setTokenData({
@@ -157,7 +158,6 @@ export default function Home() {
   }, [activeWallet, refresh]);
 
   useEffect(() => {
-    if (!activeWallet || !account) return;
     const initialRefresh = window.setTimeout(() => void refresh(), 0);
     const interval = window.setInterval(() => void refresh(), 20_000);
     return () => {
@@ -317,9 +317,9 @@ export default function Home() {
   return (
     <main className="app-shell">
       <header className="topbar">
-        <Link href="/" className="brand" aria-label="Vistacion home">
+        <Link href="/" className="brand" aria-label="Vistacoin home">
           <span className="brand-mark">V</span>
-          <span>VISTACION</span>
+          <span>VISTACOIN</span>
         </Link>
         <nav className="main-nav" aria-label="Main navigation">
           <a className="nav-link active" href="#dashboard">Dashboard</a>
@@ -367,7 +367,7 @@ export default function Home() {
       <section className="hero" id="dashboard">
         <div className="hero-copy">
           <p className="eyebrow"><span className="eyebrow-line" /> SEPOLIA TESTNET</p>
-          <h1>Vistacion<br /><span>token dashboard</span></h1>
+          <h1>Vistacoin<br /><span>token dashboard</span></h1>
           <p className="hero-description">
             Your VSC portfolio and on-chain controls, connected to the Sepolia smoke-tested deployment.
           </p>
@@ -439,7 +439,7 @@ export default function Home() {
             <span className="metric-icon">V</span>
           </div>
           <div className="metric-value">
-            {tokenData ? formatTokenAmount(tokenData.balance) : "—"} <span>VSC</span>
+            {tokenData && account ? formatTokenAmount(tokenData.balance) : "—"} <span>VSC</span>
           </div>
           <div className="metric-foot">
             {account ? shortenAddress(account) : "Connect wallet to view your balance"}
@@ -451,8 +451,8 @@ export default function Home() {
             <span className="metric-label">SEPOLIA ETH</span>
             <span className="metric-icon eth-icon">Ξ</span>
           </div>
-          <div className="metric-value">{tokenData ? formatEth(tokenData.nativeBalance) : "—"} <span>ETH</span></div>
-          <div className="metric-foot">Wallet gas balance</div>
+          <div className="metric-value">{tokenData && account ? formatEth(tokenData.nativeBalance) : "—"} <span>ETH</span></div>
+          <div className="metric-foot">{account ? "Wallet gas balance" : "Connect wallet to view balance"}</div>
         </article>
         <article className="metric-card">
           <div className="metric-head">
@@ -471,25 +471,25 @@ export default function Home() {
           <div className="panel-heading">
             <div>
               <p className="eyebrow">ASSET OVERVIEW</p>
-              <h2>Vistacion token</h2>
+              <h2>Vistacoin token</h2>
             </div>
             <span className="panel-symbol">VSC</span>
           </div>
           <div className="token-identity">
             <div className="token-avatar">V</div>
             <div>
-              <h3>{tokenData?.name ?? "Vistacion"}</h3>
+              <h3>{tokenData?.name ?? "Vistacoin"}</h3>
               <p>{tokenData?.symbol ?? "VSC"} · ERC-20</p>
             </div>
             <span className={`read-status ${tokenData ? "read-live" : ""}`}>
               <span className="status-dot" />
-              {tokenData ? "LIVE DATA" : "WALLET REQUIRED"}
+              {tokenData ? "LIVE DATA" : "LOADING DATA"}
             </span>
           </div>
           <div className="detail-list">
             <div className="detail-row">
               <span>Total supply</span>
-              <strong>{tokenData ? `${formatTokenAmount(tokenData.totalSupply)} VSC` : "Connect wallet"}</strong>
+              <strong>{tokenData ? `${formatTokenAmount(tokenData.totalSupply)} VSC` : "Loading…"}</strong>
             </div>
             <div className="detail-row">
               <span>Network</span>
@@ -614,7 +614,7 @@ export default function Home() {
       </section>
 
       <footer className="site-footer">
-        <span>VISTACION <span className="footer-muted">· SEPOLIA TESTNET</span></span>
+        <span>VISTACOIN <span className="footer-muted">· SEPOLIA TESTNET</span></span>
         <span>Testnet interface · Verify every transaction in your wallet</span>
         <a href={`${explorer}/address/${CONTRACTS.token}`} target="_blank" rel="noreferrer">Etherscan ↗</a>
       </footer>

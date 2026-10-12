@@ -17,6 +17,7 @@ import {
   getInjectedWallets,
   type InjectedWallet,
 } from "@/src/lib/injected-wallet";
+import { getSepoliaReadProvider } from "@/src/lib/sepolia-read-provider";
 
 interface EscrowDeal {
   id: bigint;
@@ -109,18 +110,18 @@ export default function EscrowPage() {
   const [approvalAmount, setApprovalAmount] = useState("");
   const [dealToSubmit, setDealToSubmit] = useState("");
 
-  const isSepolia = chainId === SEPOLIA_CHAIN_ID;
+  const isSepolia = !activeWallet || chainId === SEPOLIA_CHAIN_ID;
   const selectedWalletOption = wallets[selectedWallet];
   const isOracle = Boolean(data && account && compareAddresses(account, data.oracle));
   const explorer = "https://sepolia.etherscan.io";
 
   const refresh = useCallback(async () => {
-    if (!activeWallet || !account) return;
-
     setLoading(true);
     setError("");
     try {
-      const provider = new BrowserProvider(activeWallet.provider, "any");
+      const provider = activeWallet
+        ? new BrowserProvider(activeWallet.provider, "any")
+        : getSepoliaReadProvider();
       const network = await provider.getNetwork();
       const activeChainId = Number(network.chainId);
       setChainId(activeChainId);
@@ -134,8 +135,8 @@ export default function EscrowPage() {
       const [oracle, tokenBalance, allowance, burnBasisPoints, nextId] =
         await Promise.all([
           escrow.oracle() as Promise<string>,
-          token.balanceOf(account) as Promise<bigint>,
-          token.allowance(account, CONTRACTS.escrow) as Promise<bigint>,
+          account ? token.balanceOf(account) as Promise<bigint> : Promise.resolve(BigInt(0)),
+          account ? token.allowance(account, CONTRACTS.escrow) as Promise<bigint> : Promise.resolve(BigInt(0)),
           token.burnBasisPoints() as Promise<bigint>,
           escrow.nextId() as Promise<bigint>,
         ]);
@@ -202,7 +203,6 @@ export default function EscrowPage() {
   }, [activeWallet, refresh]);
 
   useEffect(() => {
-    if (!activeWallet || !account) return;
     const initialRefresh = window.setTimeout(() => void refresh(), 0);
     const interval = window.setInterval(() => void refresh(), 30_000);
     return () => {
@@ -435,9 +435,9 @@ export default function EscrowPage() {
   return (
     <main className="app-shell">
       <header className="topbar">
-        <Link href="/" className="brand" aria-label="Vistacion home">
+        <Link href="/" className="brand" aria-label="Vistacoin home">
           <span className="brand-mark">V</span>
-          <span>VISTACION</span>
+          <span>VISTACOIN</span>
         </Link>
         <nav className="main-nav" aria-label="Main navigation">
           <Link className="nav-link" href="/">Dashboard</Link>
@@ -484,7 +484,7 @@ export default function EscrowPage() {
 
       <section className="hero escrow-hero">
         <div className="hero-copy">
-          <p className="eyebrow"><span className="eyebrow-line" /> VISTACION ESCROW · SEPOLIA</p>
+          <p className="eyebrow"><span className="eyebrow-line" /> VISTACOIN ESCROW · SEPOLIA</p>
           <h1>Deals with<br /><span>clear outcomes.</span></h1>
           <p className="hero-description">
             Hold VSC in escrow while work is completed. The authorized oracle reviews submission and approves release or buyer refund.
@@ -558,7 +558,7 @@ export default function EscrowPage() {
             <span className="metric-icon">V</span>
           </div>
           <div className="metric-value">
-            {data ? formatTokenAmount(data.tokenBalance) : "—"} <span>VSC</span>
+            {data && account ? formatTokenAmount(data.tokenBalance) : "—"} <span>VSC</span>
           </div>
           <div className="metric-foot">
             {account ? shortenAddress(account) : "Connect wallet to create a deal"}
@@ -570,7 +570,7 @@ export default function EscrowPage() {
             <span className="metric-icon approval-icon">◎</span>
           </div>
           <div className="metric-value">
-            {data ? formatTokenAmount(data.allowance) : "—"} <span>VSC</span>
+            {data && account ? formatTokenAmount(data.allowance) : "—"} <span>VSC</span>
           </div>
           <div className="metric-foot">Approved for this contract</div>
         </article>
@@ -580,7 +580,7 @@ export default function EscrowPage() {
             <span className="metric-icon burn-icon">◆</span>
           </div>
           <div className="metric-value escrow-oracle-value">
-            {data ? shortenAddress(data.oracle) : "—"}
+            {data ? shortenAddress(data.oracle) : "Loading…"}
           </div>
           <div className="metric-foot">{isOracle ? "This wallet can resolve submitted deals" : "Only this wallet can resolve deals"}</div>
         </article>
@@ -756,17 +756,12 @@ export default function EscrowPage() {
           </div>
           <div className="deal-list-controls">
             {isOracle && <span className="oracle-badge"><span className="secure-dot" /> ORACLE ACCESS</span>}
-            <button className="refresh-button" onClick={() => void refresh()} disabled={loading || !activeWallet}>
+            <button className="refresh-button" onClick={() => void refresh()} disabled={loading}>
               {loading ? "Refreshing…" : "Refresh"}
             </button>
           </div>
         </div>
-        {!activeWallet || !account ? (
-          <div className="empty-deals">
-            <p>Connect your wallet on Sepolia to load deal records.</p>
-            <button className="primary-button" onClick={connectWallet}>Connect wallet</button>
-          </div>
-        ) : !isSepolia ? (
+        {!isSepolia ? (
           <div className="empty-deals">
             <p>Switch to Sepolia to view deal records.</p>
             <button className="primary-button" onClick={switchToSepolia}>Switch to Sepolia</button>
@@ -849,7 +844,8 @@ export default function EscrowPage() {
           </div>
         ) : (
           <div className="empty-deals">
-            <p>No escrow deals have been created yet on this deployment.</p>
+            <p>{data ? "No escrow deals have been created yet on this deployment." : "Loading public escrow records…"}</p>
+            {!activeWallet && <button className="primary-button" onClick={connectWallet}>Connect wallet to create a deal</button>}
           </div>
         )}
         {data && data.nextId > BigInt(50) && (
@@ -860,7 +856,7 @@ export default function EscrowPage() {
       </section>
 
       <footer className="site-footer">
-        <span>VISTACION <span className="footer-muted">· SEPOLIA TESTNET</span></span>
+        <span>VISTACOIN <span className="footer-muted">· SEPOLIA TESTNET</span></span>
         <span>Oracle-mediated testnet escrow · Verify every transaction in your wallet</span>
         <a href={`${explorer}/address/${CONTRACTS.escrow}`} target="_blank" rel="noreferrer">
           Etherscan ↗
