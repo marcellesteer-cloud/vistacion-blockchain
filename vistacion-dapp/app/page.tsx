@@ -616,6 +616,7 @@ export default function Home() {
       <footer className="site-footer">
         <span>VISTACOIN <span className="footer-muted">· SEPOLIA TESTNET</span></span>
         <span>Testnet interface · Verify every transaction in your wallet</span>
+        <a href="https://aerovistaclub.co.uk" target="_blank" rel="noopener noreferrer">Aero Vista Club ↗</a>
         <a href={`${explorer}/address/${CONTRACTS.token}`} target="_blank" rel="noreferrer">Etherscan ↗</a>
       </footer>
     </main>
