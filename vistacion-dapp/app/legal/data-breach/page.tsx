@@ -6,7 +6,7 @@ export default function DataBreachPage() {
   return (
     <>
       <h1>Data Breach Policy</h1>
-      <p>Last updated: [DATE]. Applies to all administrators, staff and contractors with access to Vistacoin customer data. Breach lead: [NAME / ROLE, EMAIL, PHONE].</p>
+      <p>Last updated: [DATE]. Applies to all administrators, staff and contractors with access to Vistacoin customer data. Breach lead: Marcelle (Director/Owner — confirm), marcelle@aerovistaclub.co.uk, 07749 395963.</p>
 
       <h2>1. What is a personal data breach</h2>
       <p>Any security incident leading to accidental or unlawful destruction, loss, alteration, unauthorised disclosure of, or access to, personal data. Examples: a stolen or shared password, a lost laptop with an active session, data emailed to the wrong person, a misconfigured database policy, or a compromised provider account.</p>
@@ -37,7 +37,7 @@ export default function DataBreachPage() {
       </ul>
 
       <h2>6. Contacts</h2>
-      <p>Breach lead: [NAME, EMAIL, PHONE]. ICO: ico.org.uk/make-a-complaint/data-protection-complaints/ or 0303 123 1113.</p>
+      <p>Breach lead: Marcelle, marcelle@aerovistaclub.co.uk, 07749 395963. ICO: ico.org.uk/make-a-complaint/data-protection-complaints/ or 0303 123 1113.</p>
     </>
   );
 }

@@ -6,7 +6,7 @@ export default function TermsPage() {
   return (
     <>
       <h1>Terms &amp; Conditions</h1>
-      <p>Last updated: [DATE]. Operator: Aerovista Club, company number [NUMBER], registered office [ADDRESS] (&ldquo;we&rdquo;, &ldquo;us&rdquo;). Contact: [EMAIL].</p>
+      <p>Last updated: [DATE]. Operator: Aerovista Club, company number [NUMBER], registered office 33 Fairhills, Irlam, Manchester, M44 6BA (&ldquo;we&rdquo;, &ldquo;us&rdquo;). Contact: marcelle@aerovistaclub.co.uk.</p>
 
       <h2>1. About this service</h2>
       <p>Vistacoin provides (a) a demonstration of an escrow workflow using fictional data, (b) a testnet token and smart-contract interface on the Ethereum Sepolia test network, and (c) a private customer-management workspace for authorised staff. By using the site you agree to these terms.</p>
@@ -54,7 +54,7 @@ export default function TermsPage() {
       <p>These terms are governed by the laws of [England and Wales — CONFIRM], and the courts of [England and Wales — CONFIRM] have jurisdiction, without affecting any mandatory consumer rights.</p>
 
       <h2>13. Contact</h2>
-      <p>[EMAIL] · [POSTAL ADDRESS]</p>
+      <p>marcelle@aerovistaclub.co.uk · 33 Fairhills, Irlam, Manchester, M44 6BA</p>
     </>
   );
 }

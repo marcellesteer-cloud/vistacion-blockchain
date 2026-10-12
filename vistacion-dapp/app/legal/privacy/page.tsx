@@ -6,7 +6,7 @@ export default function PrivacyPage() {
   return (
     <>
       <h1>Privacy Notice</h1>
-      <p>Last updated: [DATE]. Data controller: Aerovista Club, [ADDRESS]. Contact for privacy matters: [EMAIL]. ICO registration number: [NUMBER — confirm whether registration is required]. This notice is written for UK GDPR and the Data Protection Act 2018.</p>
+      <p>Last updated: [DATE]. Data controller: Aerovista Club, 33 Fairhills, Irlam, Manchester, M44 6BA. Contact for privacy matters: marcelle@aerovistaclub.co.uk. ICO registration number: [NUMBER — confirm whether registration is required]. This notice is written for UK GDPR and the Data Protection Act 2018.</p>
 
       <h2>1. What we collect</h2>
       <ul>
@@ -38,7 +38,7 @@ export default function PrivacyPage() {
       <p>Customer data is held behind staff login with row-level access controls, so only authorised staff can read or change it. Access is limited to what is needed, administrators can revoke it, and incidents are handled under our <a href="/legal/data-breach">Data Breach Policy</a>. No system is completely secure.</p>
 
       <h2>7. Your rights</h2>
-      <p>You may request access, correction, erasure, restriction, portability, and object to processing based on legitimate interests. Contact [EMAIL]. We will respond within one month. You may complain to the Information Commissioner&rsquo;s Office (ico.org.uk, 0303 123 1113) — we ask that you contact us first.</p>
+      <p>You may request access, correction, erasure, restriction, portability, and object to processing based on legitimate interests. Contact marcelle@aerovistaclub.co.uk. We will respond within one month. You may complain to the Information Commissioner&rsquo;s Office (ico.org.uk, 0303 123 1113) — we ask that you contact us first.</p>
 
       <h2>8. Cookies</h2>
       <p>We use only essential cookies needed for staff sign-in sessions. We do not use advertising or analytics cookies. [Update if this changes.]</p>
