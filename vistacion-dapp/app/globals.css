@@ -139,6 +139,31 @@ select:focus-visible {
   content: "";
 }
 
+.aerovista-button {
+  display: inline-flex;
+  min-height: 38px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 12px;
+  border: 1px solid #83c956;
+  border-radius: 7px;
+  background: var(--green);
+  color: #10150e;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  transition:
+    transform 160ms ease,
+    background 160ms ease;
+}
+
+.aerovista-button:hover {
+  transform: translateY(-1px);
+  background: #b7f487;
+}
+
 .wallet-controls,
 .connect-row {
   display: flex;
@@ -1847,7 +1872,16 @@ select:focus-visible {
   }
 
   .wallet-controls {
+    order: 2;
     margin-left: auto;
+  }
+
+  .aerovista-button {
+    min-height: 34px;
+    order: 1;
+    margin-left: auto;
+    padding: 0 9px;
+    font-size: 10px;
   }
 
   .network-pill {
