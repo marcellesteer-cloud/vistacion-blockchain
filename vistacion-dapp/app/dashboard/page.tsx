@@ -444,7 +444,7 @@ export default function Home() {
           </div>
           <div className="cta-container">
             <a
-              href="https://aerovistaclub.co.uk"
+              href="https://fly-aerovista.emergent.host"
               target="_blank"
               rel="noopener noreferrer"
               className="cta-button"

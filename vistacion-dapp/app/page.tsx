@@ -87,7 +87,7 @@ export default function Home() {
         <p className="landing-kicker">AEROVISTA GROUP</p>
         <h2>Private aviation · Luxury yachting · Global brokerage</h2>
         <p>Explore Aero Vista Club’s brokerage services through its own website.</p>
-        <a className="text-gold-link" href="https://aerovistaclub.co.uk" target="_blank" rel="noreferrer">
+        <a className="text-gold-link" href="https://fly-aerovista.emergent.host" target="_blank" rel="noreferrer">
           Visit Aero Vista Club <span aria-hidden="true">↗</span>
         </a>
       </section>
