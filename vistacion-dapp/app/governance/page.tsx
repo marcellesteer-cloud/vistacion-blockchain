@@ -386,6 +386,7 @@ export default function GovernancePage() {
           <Link className="nav-link" href="/escrow">Escrow</Link>
           <Link className="nav-link active" href="/governance">Governance</Link>
           <Link className="nav-link" href="/ico">Presale</Link>
+          <a className="nav-link" href="https://fly-aerovista.emergent.host" target="_blank" rel="noopener noreferrer">AeroVista</a>
         </nav>
         <div className="wallet-controls">
           {activeWallet && account ? (
