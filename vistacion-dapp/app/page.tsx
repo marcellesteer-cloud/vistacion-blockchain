@@ -9,6 +9,7 @@ export default function Home() {
           <span className="site-brand-name"><strong>VISTA</strong>COIN</span>
         </Link>
         <nav className="site-nav" aria-label="Main navigation">
+          <a className="aerovista-button" href="https://fly-aerovista.emergent.host" target="_blank" rel="noopener noreferrer">AeroVista Club <span aria-hidden="true">↗</span></a>
           <Link href="/demo">Demo</Link>
           <Link href="/dashboard">Token dashboard</Link>
           <Link href="/staff/login" className="site-nav-login">Customer management <span aria-hidden="true">↗</span></Link>

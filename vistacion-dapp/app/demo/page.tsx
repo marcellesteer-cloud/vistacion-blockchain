@@ -15,6 +15,7 @@ export default function DemoPage() {
           <span className="site-brand-name"><strong>VISTA</strong>COIN</span>
         </Link>
         <nav className="site-nav" aria-label="Main navigation">
+          <a className="aerovista-button" href="https://fly-aerovista.emergent.host" target="_blank" rel="noopener noreferrer">AeroVista Club <span aria-hidden="true">↗</span></a>
           <Link href="/">Home</Link>
           <Link href="/dashboard">Token dashboard</Link>
           <Link href="/staff/login" className="site-nav-login">Staff sign in</Link>

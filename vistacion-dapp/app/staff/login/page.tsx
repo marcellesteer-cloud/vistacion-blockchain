@@ -34,6 +34,7 @@ export default function StaffLoginPage() {
           <span className="site-brand-name"><strong>VISTA</strong>COIN</span>
         </Link>
         <nav className="site-nav" aria-label="Main navigation">
+          <a className="aerovista-button" href="https://fly-aerovista.emergent.host" target="_blank" rel="noopener noreferrer">AeroVista Club <span aria-hidden="true">↗</span></a>
           <Link href="/">Home</Link>
           <Link href="/demo">Demo</Link>
         </nav>

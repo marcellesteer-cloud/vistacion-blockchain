@@ -362,6 +362,7 @@ export default function ICOPage() {
           <Link className="nav-link" href="/governance">Governance</Link>
           <Link className="nav-link active" href="/ico">Presale</Link>
         </nav>
+        <a className="aerovista-button" href="https://fly-aerovista.emergent.host" target="_blank" rel="noopener noreferrer">AeroVista Club <span aria-hidden="true">↗</span></a>
         <div className="wallet-controls">
           {activeWallet && account ? (
             <>

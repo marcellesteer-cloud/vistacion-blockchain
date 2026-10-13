@@ -96,6 +96,39 @@ body {
   border-radius: 6px;
 }
 
+.aerovista-button {
+  display: inline-flex;
+  min-height: 38px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 14px;
+  border: 1px solid #efc460;
+  border-radius: 6px;
+  background: #efc460;
+  color: #10131c;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+  transition: background 160ms ease;
+}
+
+.site-nav a.aerovista-button:hover,
+.aerovista-button:hover {
+  background: #ffe09a;
+  color: #10131c;
+}
+
+@media (max-width: 640px) {
+  .topbar .aerovista-button {
+    min-height: 34px;
+    margin-left: auto;
+    padding: 0 10px;
+    font-size: 10px;
+  }
+}
+
 .landing-hero {
   position: relative;
   min-height: 575px;
